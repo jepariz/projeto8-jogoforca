@@ -6,6 +6,7 @@ import forca4 from "./assets/forca4.png";
 import forca5 from "./assets/forca5.png";
 import GlobalStyle from "./GlobalStyle";
 import styled from "styled-components";
+import { useState } from "react";
 
 const alfabeto = [
   "a",
@@ -36,27 +37,38 @@ const alfabeto = [
   "z",
 ];
 
+
 export default function App() {
+  const [iniciaJogo, setIniciaJogo] = useState(false);
+  const [disabled, setDisabled] = useState("disabled");
+
+
+function iniciarJogo() {
+   if (iniciarJogo){
+    setIniciaJogo(true)
+   } 
+  }
+
+  console.log(iniciaJogo)
+
   return (
     <ContainerJogo>
       <GlobalStyle />
       <ContainerImagem>
         <img src={forca0} />
-        <button>Escolher Palavra</button>
+        <BotaoPalavra onClick={iniciarJogo}>Escolher Palavra</BotaoPalavra>
       </ContainerImagem>
       <ContainerAlfabeto>
         <div>
           {alfabeto.map((letra) => (
-            <button>
-              <li>{letra.toUpperCase()}</li>
-            </button>
+            <BotaoLetra disabled={!iniciaJogo} key={letra}>{letra.toUpperCase()}</BotaoLetra>
           ))}
         </div>
       </ContainerAlfabeto>
       <ContainerInput>
         <p>Já sei a palavra!</p>
-        <input />
-        <button>Chutar</button>
+        <InputPalavra disabled={!iniciaJogo}/>
+        <BotaoChutar>Chutar</BotaoChutar>
       </ContainerInput>
     </ContainerJogo>
   );
@@ -80,16 +92,20 @@ const ContainerImagem = styled.div`
     width: 260px;
     height: 300px;
   }
+`;
 
-  button {
-    margin-top: 17px;
-    width: 140px;
-    height: 40px;
-    background-color: #50c878;
-    border: none;
-    border-radius: 7px;
-    color: #fff;
-    font-weight: 700;
+const BotaoPalavra = styled.button`
+  margin-top: 17px;
+  width: 140px;
+  height: 40px;
+  background-color: #50c878;
+  border: none;
+  border-radius: 7px;
+  color: #fff;
+  font-weight: 700;
+
+  &:hover {
+    cursor: pointer;
   }
 `;
 
@@ -103,17 +119,25 @@ const ContainerAlfabeto = styled.ul`
     flex-wrap: wrap;
     gap: 10px;
   }
-  button {
-    width: 30px;
-    height: 30px;
+`;
+
+const BotaoLetra = styled.button`
+  width: 30px;
+  height: 30px;
+  font-weight: 700;
+  background-color: #e8f4f8;
+  color: #30829d;
+  border: 1px solid lightblue;
+  border-radius: 2px;
+
+  &:disabled {
     background-color: #b1b1b1;
+    color: #808080;
     border: none;
-    border-radius: 2px;
   }
 
-  li {
-    font-weight: 700;
-    color: #808080;
+  &:hover {
+    cursor: pointer;
   }
 `;
 
@@ -123,21 +147,31 @@ const ContainerInput = styled.div`
   justify-content: center;
   align-items: center;
   gap: 20px;
+`;
 
-  input {
-    width: 250px;
-    height: 25px;
+const InputPalavra = styled.input`
+  width: 250px;
+  height: 25px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #fff;
+
+  &:disabled {
     border: 2px solid #b1b1b1;
-    border-radius: 5px;
+    background-color: #f2f2f2;
   }
+`;
 
-  button {
-    width: 70px;
-    height: 40px;
-    background-color: #e8f4f8;
-    border: 2px solid lightblue;
-    border-radius: 5px;
-    color: #30829d;
-    font-weight: 700;
+const BotaoChutar = styled.button`
+  width: 70px;
+  height: 40px;
+  background-color: #e8f4f8;
+  border: 2px solid lightblue;
+  border-radius: 5px;
+  color: #30829d;
+  font-weight: 700;
+
+  &:hover {
+    cursor: pointer;
   }
 `;
