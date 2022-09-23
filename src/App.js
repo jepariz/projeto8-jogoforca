@@ -7,6 +7,7 @@ import forca5 from "./assets/forca5.png";
 import GlobalStyle from "./GlobalStyle";
 import styled from "styled-components";
 import { useState } from "react";
+import palavras from "./Palavras.js";
 
 const alfabeto = [
   "a",
@@ -37,37 +38,49 @@ const alfabeto = [
   "z",
 ];
 
-
 export default function App() {
   const [iniciaJogo, setIniciaJogo] = useState(false);
-  const [disabled, setDisabled] = useState("disabled");
+  const [erros, setErros] = useState(0);
+  const [palavraSorteada, setPalavraSorteada] = useState("");
 
+  function iniciarJogo() {
+    if (iniciarJogo) {
+      setIniciaJogo(true);
+    }
 
-function iniciarJogo() {
-   if (iniciarJogo){
-    setIniciaJogo(true)
-   } 
+    const palavra = palavras[Math.floor(Math.random() * palavras.length)];
+    setPalavraSorteada(palavra);
   }
 
-  console.log(iniciaJogo)
+  const arrayDaPalavra = Array.from(palavraSorteada);
+  console.log(arrayDaPalavra);
+
+  console.log(iniciaJogo);
 
   return (
     <ContainerJogo>
       <GlobalStyle />
       <ContainerImagem>
         <img src={forca0} />
-        <BotaoPalavra onClick={iniciarJogo}>Escolher Palavra</BotaoPalavra>
+        <div>
+          <BotaoPalavra onClick={iniciarJogo}>Escolher Palavra</BotaoPalavra>
+          <ContainerPalavra>
+            {arrayDaPalavra.map((letra) => ` _ `)}
+          </ContainerPalavra>
+        </div>
       </ContainerImagem>
       <ContainerAlfabeto>
         <div>
           {alfabeto.map((letra) => (
-            <BotaoLetra disabled={!iniciaJogo} key={letra}>{letra.toUpperCase()}</BotaoLetra>
+            <BotaoLetra disabled={!iniciaJogo} key={letra}>
+              {letra.toUpperCase()}
+            </BotaoLetra>
           ))}
         </div>
       </ContainerAlfabeto>
       <ContainerInput>
         <p>Já sei a palavra!</p>
-        <InputPalavra disabled={!iniciaJogo}/>
+        <InputPalavra disabled={!iniciaJogo} />
         <BotaoChutar>Chutar</BotaoChutar>
       </ContainerInput>
     </ContainerJogo>
@@ -134,6 +147,7 @@ const BotaoLetra = styled.button`
     background-color: #b1b1b1;
     color: #808080;
     border: none;
+    cursor: auto;
   }
 
   &:hover {
@@ -174,4 +188,11 @@ const BotaoChutar = styled.button`
   &:hover {
     cursor: pointer;
   }
+`;
+
+const ContainerPalavra = styled.p`
+  margin-top: 190px;
+  display: flex;
+  font-weight: 700;
+  font-size: 30px;
 `;
