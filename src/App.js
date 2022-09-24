@@ -38,25 +38,36 @@ const alfabeto = [
   "z",
 ];
 
+const arrayAcentuacão = ["á", "à", "ã", "â", "é", "ê", "í", "ó", "ô", "õ", "ç"]
+
 export default function App() {
   const [iniciaJogo, setIniciaJogo] = useState(false);
-  const [erros, setErros] = useState(0);
+  const [erros, setErros] = useState([]);
   const [palavraSorteada, setPalavraSorteada] = useState("");
+  const [letraSelecionada, setletraSelecionada] = useState([]);
+  const [letraClicada, setLetraClicada] = useState([])
+
+  console.log(palavraSorteada);
+
+  const palavraEscondida = palavraSorteada
+    .split("")
+    .map((letra) => (letraSelecionada.includes(letra) ? letra : " _ "))
+    .join("");
+
+ 
 
   function iniciarJogo() {
-    if (iniciarJogo) {
-      setIniciaJogo(true);
-    }
+    setIniciaJogo(true);
 
     const palavra = palavras[Math.floor(Math.random() * palavras.length)];
     setPalavraSorteada(palavra);
   }
 
-  const arrayDaPalavra = Array.from(palavraSorteada);
-  console.log(arrayDaPalavra);
+  function selecionarLetra (){
 
-  console.log(iniciaJogo);
+  }
 
+  
   return (
     <ContainerJogo>
       <GlobalStyle />
@@ -64,15 +75,23 @@ export default function App() {
         <img src={forca0} />
         <div>
           <BotaoPalavra onClick={iniciarJogo}>Escolher Palavra</BotaoPalavra>
-          <ContainerPalavra>
-            {arrayDaPalavra.map((letra) => ` _ `)}
-          </ContainerPalavra>
+          <ContainerPalavra>{palavraEscondida}</ContainerPalavra>
         </div>
       </ContainerImagem>
       <ContainerAlfabeto>
         <div>
           {alfabeto.map((letra) => (
-            <BotaoLetra disabled={!iniciaJogo} key={letra}>
+            <BotaoLetra
+              onClick={() => {
+                if (palavraSorteada.includes(letra)) {
+                  setletraSelecionada([...letraSelecionada, letra])
+                 ;
+                } 
+                setLetraClicada([...letraClicada, letra])
+              }}
+              disabled={!iniciaJogo || letraClicada.includes(letra)}
+              key={letra}
+            >
               {letra.toUpperCase()}
             </BotaoLetra>
           ))}
@@ -98,7 +117,7 @@ const ContainerJogo = styled.div`
 const ContainerImagem = styled.div`
   width: 620px;
   display: flex;
-  gap: 180px;
+  gap: 160px;
   margin-top: 80px;
 
   img {
@@ -147,7 +166,6 @@ const BotaoLetra = styled.button`
     background-color: #b1b1b1;
     color: #808080;
     border: none;
-    cursor: auto;
   }
 
   &:hover {
@@ -190,9 +208,10 @@ const BotaoChutar = styled.button`
   }
 `;
 
-const ContainerPalavra = styled.p`
+const ContainerPalavra = styled.ul`
   margin-top: 190px;
   display: flex;
+  gap: 8px;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 25px;
 `;
