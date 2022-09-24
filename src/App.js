@@ -4,6 +4,7 @@ import forca2 from "./assets/forca2.png";
 import forca3 from "./assets/forca3.png";
 import forca4 from "./assets/forca4.png";
 import forca5 from "./assets/forca5.png";
+import forca6 from "./assets/forca6.png";
 import GlobalStyle from "./GlobalStyle";
 import styled from "styled-components";
 import { useState } from "react";
@@ -38,14 +39,14 @@ const alfabeto = [
   "z",
 ];
 
-const arrayAcentuacão = ["á", "à", "ã", "â", "é", "ê", "í", "ó", "ô", "õ", "ç"]
-
 export default function App() {
   const [iniciaJogo, setIniciaJogo] = useState(false);
-  const [erros, setErros] = useState([]);
+  const [erros, setErros] = useState(1);
   const [palavraSorteada, setPalavraSorteada] = useState("");
   const [letraSelecionada, setletraSelecionada] = useState([]);
-  const [letraClicada, setLetraClicada] = useState([])
+  const [letraClicada, setLetraClicada] = useState([]);
+  const [imagemErros, setImagemErros] = useState(forca0);
+  
 
   console.log(palavraSorteada);
 
@@ -54,25 +55,62 @@ export default function App() {
     .map((letra) => (letraSelecionada.includes(letra) ? letra : " _ "))
     .join("");
 
- 
 
   function iniciarJogo() {
     setIniciaJogo(true);
 
-    const palavra = palavras[Math.floor(Math.random() * palavras.length)];
+    const palavrasSemAcento = palavras.map((p) => p.normalize("NFD").replace(/[\u0300-\u036f]/g, ''))
+    console.log(palavrasSemAcento)
+
+    const palavra = palavrasSemAcento[Math.floor(Math.random() * palavras.length)];
     setPalavraSorteada(palavra);
   }
 
-  function selecionarLetra (){
 
-  }
+  function selecionarLetra(letra) {
+    if (palavraSorteada.includes(letra)) {
+     
+      console.log(palavraSorteada)
+      setletraSelecionada([...letraSelecionada, letra]);
+      }
+    
+    setLetraClicada([...letraClicada, letra]);
 
-  
+    if (!palavraSorteada.includes(letra)) {
+      setErros(erros + 1);
+      switch (erros) {
+        case 1:
+          setImagemErros(forca1);
+          break;
+        case 2:
+          setImagemErros(forca2);
+          break;
+        case 3:
+          setImagemErros(forca3);
+          break;
+        case 4:
+          setImagemErros(forca4);
+          break;
+        case 5:
+          setImagemErros(forca5);
+          break;
+        case 6:
+          setImagemErros(forca6);
+          break;
+        default:
+          break;
+      }
+      
+    }
+}
+
+function chutar ()
+
   return (
     <ContainerJogo>
       <GlobalStyle />
       <ContainerImagem>
-        <img src={forca0} />
+        <img src={imagemErros} />
         <div>
           <BotaoPalavra onClick={iniciarJogo}>Escolher Palavra</BotaoPalavra>
           <ContainerPalavra>{palavraEscondida}</ContainerPalavra>
@@ -82,13 +120,7 @@ export default function App() {
         <div>
           {alfabeto.map((letra) => (
             <BotaoLetra
-              onClick={() => {
-                if (palavraSorteada.includes(letra)) {
-                  setletraSelecionada([...letraSelecionada, letra])
-                 ;
-                } 
-                setLetraClicada([...letraClicada, letra])
-              }}
+              onClick={() => selecionarLetra(letra)}
               disabled={!iniciaJogo || letraClicada.includes(letra)}
               key={letra}
             >
@@ -100,7 +132,7 @@ export default function App() {
       <ContainerInput>
         <p>Já sei a palavra!</p>
         <InputPalavra disabled={!iniciaJogo} />
-        <BotaoChutar>Chutar</BotaoChutar>
+        <BotaoChutar onClick={chutar}>Chutar</BotaoChutar>
       </ContainerInput>
     </ContainerJogo>
   );
