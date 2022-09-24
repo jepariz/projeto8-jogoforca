@@ -46,7 +46,9 @@ export default function App() {
   const [letraSelecionada, setletraSelecionada] = useState([]);
   const [letraClicada, setLetraClicada] = useState([]);
   const [imagemErros, setImagemErros] = useState(forca0);
-  
+  const [chute, setChute] = useState("");
+  const [palavraExibida, setPalavraExibida] = useState("");
+  const [cor, setCor] = useState("");
 
   console.log(palavraSorteada);
 
@@ -55,25 +57,37 @@ export default function App() {
     .map((letra) => (letraSelecionada.includes(letra) ? letra : " _ "))
     .join("");
 
-
   function iniciarJogo() {
     setIniciaJogo(true);
 
-    const palavrasSemAcento = palavras.map((p) => p.normalize("NFD").replace(/[\u0300-\u036f]/g, ''))
-    console.log(palavrasSemAcento)
+    const palavrasSemAcento = palavras.map((p) =>
+      p.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    );
 
-    const palavra = palavrasSemAcento[Math.floor(Math.random() * palavras.length)];
+    const palavra =
+      palavrasSemAcento[Math.floor(Math.random() * palavras.length)];
     setPalavraSorteada(palavra);
+
+    if(iniciaJogo){
+      setPalavraExibida(palavraEscondida)
+      console.log(palavraEscondida
+        )
+    }
   }
 
+  // function exibirPalavra() {
+  //   if (chute === palavraSorteada) {
+  //     setPalavraExibida(chute);
+  //     setCor(".cor1");
+  //   }
+  // }
 
   function selecionarLetra(letra) {
     if (palavraSorteada.includes(letra)) {
-     
-      console.log(palavraSorteada)
+      console.log(palavraSorteada);
       setletraSelecionada([...letraSelecionada, letra]);
-      }
-    
+    }
+
     setLetraClicada([...letraClicada, letra]);
 
     if (!palavraSorteada.includes(letra)) {
@@ -100,150 +114,52 @@ export default function App() {
         default:
           break;
       }
-      
     }
-}
-
-function chutar ()
+  }
 
   return (
-    <ContainerJogo>
+    <div className="container-jogo">
       <GlobalStyle />
-      <ContainerImagem>
+      <div className="container-imagem">
         <img src={imagemErros} />
         <div>
-          <BotaoPalavra onClick={iniciarJogo}>Escolher Palavra</BotaoPalavra>
-          <ContainerPalavra>{palavraEscondida}</ContainerPalavra>
+          <button className="escolher-palavra" onClick={iniciarJogo}>Escolher Palavra</button>
+          <ul className="container-palavra">
+            <li className={cor}>{palavraEscondida}</li>
+          </ul>
         </div>
-      </ContainerImagem>
-      <ContainerAlfabeto>
+      </div>
+      <div className="container-alfabeto">
         <div>
           {alfabeto.map((letra) => (
-            <BotaoLetra
+            <button className="letras"
               onClick={() => selecionarLetra(letra)}
               disabled={!iniciaJogo || letraClicada.includes(letra)}
               key={letra}
             >
               {letra.toUpperCase()}
-            </BotaoLetra>
+            </button>
           ))}
         </div>
-      </ContainerAlfabeto>
-      <ContainerInput>
+      </div>
+      <div className="chutes">
         <p>Já sei a palavra!</p>
-        <InputPalavra disabled={!iniciaJogo} />
-        <BotaoChutar onClick={chutar}>Chutar</BotaoChutar>
-      </ContainerInput>
-    </ContainerJogo>
+        <input
+          disabled={!iniciaJogo}
+          value={chute}
+          onChange={(event) => setChute(event.target.value)}
+        />
+        <button className="btn-chutar"
+          onClick={() => {
+            if (chute === palavraSorteada) {
+            } else if (chute !== palavraSorteada) {
+              setImagemErros(forca6);
+            }
+          }}
+        >
+          Chutar
+        </button>
+      </div>
+    </div>
   );
 }
-
-// Estilos ---------------------------------------------------------------------------------------------
-
-const ContainerJogo = styled.div`
-  display: grid;
-  justify-content: center;
-  font-family: "Roboto", sans-serif;
-`;
-
-const ContainerImagem = styled.div`
-  width: 620px;
-  display: flex;
-  gap: 160px;
-  margin-top: 80px;
-
-  img {
-    width: 260px;
-    height: 300px;
-  }
-`;
-
-const BotaoPalavra = styled.button`
-  margin-top: 17px;
-  width: 140px;
-  height: 40px;
-  background-color: #50c878;
-  border: none;
-  border-radius: 7px;
-  color: #fff;
-  font-weight: 700;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const ContainerAlfabeto = styled.ul`
-  display: flex;
-  justify-content: space-evenly;
-  margin-top: 30px;
-  div {
-    width: 530px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-`;
-
-const BotaoLetra = styled.button`
-  width: 30px;
-  height: 30px;
-  font-weight: 700;
-  background-color: #e8f4f8;
-  color: #30829d;
-  border: 1px solid lightblue;
-  border-radius: 2px;
-
-  &:disabled {
-    background-color: #b1b1b1;
-    color: #808080;
-    border: none;
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const ContainerInput = styled.div`
-  display: flex;
-  margin-top: 30px;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-`;
-
-const InputPalavra = styled.input`
-  width: 250px;
-  height: 25px;
-  border: 1px solid black;
-  border-radius: 5px;
-  background-color: #fff;
-
-  &:disabled {
-    border: 2px solid #b1b1b1;
-    background-color: #f2f2f2;
-  }
-`;
-
-const BotaoChutar = styled.button`
-  width: 70px;
-  height: 40px;
-  background-color: #e8f4f8;
-  border: 2px solid lightblue;
-  border-radius: 5px;
-  color: #30829d;
-  font-weight: 700;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const ContainerPalavra = styled.ul`
-  margin-top: 190px;
-  display: flex;
-  gap: 8px;
-  font-weight: 700;
-  font-size: 25px;
-`;

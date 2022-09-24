@@ -1,0 +1,120 @@
+.container-jogo {
+  display: grid;
+  justify-content: center;
+  font-family: "Roboto", sans-serif;
+}
+
+.container-imagem {
+  width: 620px;
+  display: flex;
+  gap: 160px;
+  margin-top: 80px;
+}
+
+.container-imagem img{
+    width: 260px;
+    height: 300px;
+}
+
+.escolher-palavra{
+    margin-top: 17px;
+    width: 140px;
+    height: 40px;
+    background-color: #50c878;
+    border: none;
+    border-radius: 7px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.escolher-palavra:hover{
+    cursor: pointer;
+}
+
+.container-alfabeto{
+    display: flex;
+  justify-content: space-evenly;
+  margin-top: 30px;
+}
+
+.container-alfabeto div{
+    width: 530px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.letras{
+    width: 30px;
+    height: 30px;
+    font-weight: 700;
+    background-color: #e8f4f8;
+    color: #30829d;
+    border: 1px solid lightblue;
+    border-radius: 2px;
+}
+
+.letras:disabled{
+    background-color: #b1b1b1;
+    color: #808080;
+    border: none;
+}
+
+.letras:hover{
+    cursor: pointer;
+}
+
+.chutes{
+    display: flex;
+    margin-top: 30px;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+input{
+    width: 250px;
+    height: 25px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+input:disabled{
+    border: 2px solid #b1b1b1;
+    background-color: #f2f2f2;
+}
+
+.btn-chutar{
+    width: 70px;
+    height: 40px;
+    background-color: #e8f4f8;
+    border: 2px solid lightblue;
+    border-radius: 5px;
+    color: #30829d;
+    font-weight: 700;
+}
+
+.btn-chutar:hover{
+    cursor: pointer;
+}
+
+.container-palavra{
+    margin-top: 190px;
+    display: flex;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+li {
+  color: black;
+}
+
+.cor1 {
+  color: #50c878;
+}
+
+.cor2 {
+  color: red;
+}
