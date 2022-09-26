@@ -60,6 +60,13 @@ export default function App() {
    
 
   function iniciarJogo() {
+
+  //  if(jogoTerminou === true){
+  //   setPalavraSorteada([])
+  //   setLetraCorreta([])
+  //   setLetraErrada([])
+  //  }
+
     setIniciaJogo(true);
 
     const palavrasSemAcento = palavras.map((p) =>
@@ -70,6 +77,20 @@ export default function App() {
       palavrasSemAcento[Math.floor(Math.random() * palavras.length)];
     setPalavraSorteada(palavra);
 
+  reiniciarJogo()
+
+  }
+
+  function reiniciarJogo(){
+    if(iniciaJogo === true){
+      setErros(1)
+      setLetraCorreta([])
+      setLetraErrada([])
+      setImagemErros(forca0)
+      setChute("")
+      setChutou(false)
+      
+      }
   }
 
   
@@ -80,6 +101,8 @@ export default function App() {
     }
 
     setLetraErrada([...letraErrada, letra]);
+
+    terminarJogo()
 
     if (!palavraSorteada.includes(letra)) {
       setErros(erros + 1);
@@ -101,13 +124,33 @@ export default function App() {
           break;
         case 6:
           setImagemErros(forca6);
+          setJogoTerminou(true)
+          setLetraCorreta([])
           break;
         default:
           break;
       }
     }
   }
+
+  function terminarJogo (){
+    if(palavraEscondida.includes(letraCorreta)){
+      setJogoTerminou(true) 
+    }
+
+    // if(chute === palavraSorteada){
+    //   setJogoTerminou(true)
+    // }
+
+    // if(imagemErros === forca6){
+    //   setJogoTerminou(true)
+    // }
+    // // if(jogoTerminou === true){
+    // //   setLetraErrada([])
+    // // }
+  }
  
+  console.log(jogoTerminou)
 
   return (
     <div className="container-jogo">
@@ -124,7 +167,7 @@ export default function App() {
           alt="forca"
         />
         <div>
-          <button className="escolher-palavra" onClick={iniciarJogo}>
+          <button data-identifier="choose-word" className="escolher-palavra" onClick={iniciarJogo}>
             Escolher Palavra
           </button>
           <div className="container-palavra">
@@ -155,7 +198,7 @@ export default function App() {
       <div className="container-alfabeto">
         <div>
           {alfabeto.map((letra) => (
-            <button
+            <button data-identifier="letter"
               className="letras"
               onClick={() => selecionarLetra(letra)}
               disabled={
@@ -175,7 +218,7 @@ export default function App() {
       </div>
       <div className="chutes">
         <p>Já sei a palavra!</p>
-        <input
+        <input data-identifier="type-guess"
           disabled={
             !iniciaJogo ||
             palavraEscondida === palavraSorteada ||
@@ -186,7 +229,7 @@ export default function App() {
           value={chutou === true ? "" : chute}
           onChange={(event) => setChute(event.target.value)}
         />
-        <button className="btn-chutar" onClick={() => setChutou(true)}>
+        <button data-identifier="guess-button" className="btn-chutar" onClick={() => setChutou(true) && (chute === palavraSorteada)? setJogoTerminou(true): setJogoTerminou(true)}>
           Chutar
         </button>
       </div>
@@ -195,9 +238,9 @@ export default function App() {
 }
 
 function Palavra({ cor, conteudo }) {
-  return <span className={cor}>{conteudo}</span>;
+  return <span data-identifier="word" className={cor}>{conteudo}</span>;
 }
 
 function Imagem({ imagem }) {
-  return <img src={imagem} />;
+  return <img src={imagem} data-identifier="game-image" />;
 }
