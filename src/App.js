@@ -6,8 +6,7 @@ import forca4 from "./assets/forca4.png";
 import forca5 from "./assets/forca5.png";
 import forca6 from "./assets/forca6.png";
 import GlobalStyle from "./GlobalStyle";
-import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import palavras from "./Palavras.js";
 
 const alfabeto = [
@@ -43,19 +42,22 @@ export default function App() {
   const [iniciaJogo, setIniciaJogo] = useState(false);
   const [erros, setErros] = useState(1);
   const [palavraSorteada, setPalavraSorteada] = useState("");
-  const [letraSelecionada, setletraSelecionada] = useState([]);
-  const [letraClicada, setLetraClicada] = useState([]);
+  const [letraCorreta, setLetraCorreta] = useState([]);
+  const [letraErrada, setLetraErrada] = useState([]);
   const [imagemErros, setImagemErros] = useState(forca0);
   const [chute, setChute] = useState("");
-  const [palavraExibida, setPalavraExibida] = useState("");
-  const [cor, setCor] = useState("");
+  const [chutou, setChutou] = useState(false);
+  const [jogoTerminou, setJogoTerminou] = useState(false);
+
 
   console.log(palavraSorteada);
 
-  const palavraEscondida = palavraSorteada
-    .split("")
-    .map((letra) => (letraSelecionada.includes(letra) ? letra : " _ "))
-    .join("");
+  let palavraEscondida = palavraSorteada
+  .split("")
+  .map((letra) => (letraCorreta.includes(letra) ? letra : "_"))
+  .join("");
+
+   
 
   function iniciarJogo() {
     setIniciaJogo(true);
@@ -68,27 +70,16 @@ export default function App() {
       palavrasSemAcento[Math.floor(Math.random() * palavras.length)];
     setPalavraSorteada(palavra);
 
-    if(iniciaJogo){
-      setPalavraExibida(palavraEscondida)
-      console.log(palavraEscondida
-        )
-    }
   }
 
-  // function exibirPalavra() {
-  //   if (chute === palavraSorteada) {
-  //     setPalavraExibida(chute);
-  //     setCor(".cor1");
-  //   }
-  // }
+  
 
   function selecionarLetra(letra) {
     if (palavraSorteada.includes(letra)) {
-      console.log(palavraSorteada);
-      setletraSelecionada([...letraSelecionada, letra]);
+      setLetraCorreta([...letraCorreta, letra]);
     }
 
-    setLetraClicada([...letraClicada, letra]);
+    setLetraErrada([...letraErrada, letra]);
 
     if (!palavraSorteada.includes(letra)) {
       setErros(erros + 1);
@@ -116,25 +107,65 @@ export default function App() {
       }
     }
   }
+ 
 
   return (
     <div className="container-jogo">
       <GlobalStyle />
       <div className="container-imagem">
-        <img src={imagemErros} />
+        <Imagem
+          imagem={
+            chutou === true
+              ? chute !== palavraSorteada
+                ? forca6
+                : imagemErros
+              : imagemErros
+          }
+          alt="forca"
+        />
         <div>
-          <button className="escolher-palavra" onClick={iniciarJogo}>Escolher Palavra</button>
-          <ul className="container-palavra">
-            <li className={cor}>{palavraEscondida}</li>
-          </ul>
+          <button className="escolher-palavra" onClick={iniciarJogo}>
+            Escolher Palavra
+          </button>
+          <div className="container-palavra">
+            <Palavra
+              cor={
+                chutou === true
+                  ? chute === palavraSorteada
+                    ? "cor1"
+                    : "cor2"
+                  : "cor3" && imagemErros !== forca6 
+                  ? !palavraEscondida.includes('_') ? "cor1" : "cor3" : "cor2"
+              }
+              conteudo={
+                chutou === true
+                  ? chute === palavraSorteada
+                    ? chute
+                    : palavraSorteada
+                  : palavraEscondida || jogoTerminou === true
+                  ? imagemErros === forca6
+                    ? palavraSorteada
+                    : palavraEscondida
+                  : palavraEscondida 
+              }
+            />
+          </div>
         </div>
       </div>
       <div className="container-alfabeto">
         <div>
           {alfabeto.map((letra) => (
-            <button className="letras"
+            <button
+              className="letras"
               onClick={() => selecionarLetra(letra)}
-              disabled={!iniciaJogo || letraClicada.includes(letra)}
+              disabled={
+                !iniciaJogo ||
+                letraErrada.includes(letra) ||
+                palavraEscondida === palavraSorteada ||
+                (chutou === true && chute !== palavraSorteada) ||
+                (chutou === true && chute === palavraSorteada) ||
+                imagemErros === forca6 
+              }
               key={letra}
             >
               {letra.toUpperCase()}
@@ -145,21 +176,28 @@ export default function App() {
       <div className="chutes">
         <p>Já sei a palavra!</p>
         <input
-          disabled={!iniciaJogo}
-          value={chute}
+          disabled={
+            !iniciaJogo ||
+            palavraEscondida === palavraSorteada ||
+            (chutou === true && chute !== palavraSorteada) ||
+            (chutou === true && chute === palavraSorteada) ||
+            imagemErros === forca6
+          }
+          value={chutou === true ? "" : chute}
           onChange={(event) => setChute(event.target.value)}
         />
-        <button className="btn-chutar"
-          onClick={() => {
-            if (chute === palavraSorteada) {
-            } else if (chute !== palavraSorteada) {
-              setImagemErros(forca6);
-            }
-          }}
-        >
+        <button className="btn-chutar" onClick={() => setChutou(true)}>
           Chutar
         </button>
       </div>
     </div>
   );
+}
+
+function Palavra({ cor, conteudo }) {
+  return <span className={cor}>{conteudo}</span>;
+}
+
+function Imagem({ imagem }) {
+  return <img src={imagem} />;
 }

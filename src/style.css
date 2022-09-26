@@ -107,9 +107,10 @@ input:disabled{
     font-size: 25px;
 }
 
-li {
-  color: black;
+span{
+    letter-spacing: 0.5em;
 }
+
 
 .cor1 {
   color: #50c878;
@@ -117,4 +118,8 @@ li {
 
 .cor2 {
   color: red;
+}
+
+.cor3{
+    color: black
 }
